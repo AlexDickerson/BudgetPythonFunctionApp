@@ -22,6 +22,7 @@ def uploadToSQL(transacitonData):
     
     df = pd.DataFrame(transacitonData, columns=['transDate', 'merchant', 'amount', 'account', 'transID', 'type'])
     df = df[['transID', 'transDate', 'merchant', 'amount', 'type', 'account']]
+    df.set_index('transID', inplace=True)
 
     server = 'adbudget.database.windows.net' 
     database = 'adbudgetdb' 
@@ -32,7 +33,11 @@ def uploadToSQL(transacitonData):
 
     cursor = cnxn.cursor()
 
-    for row in df.itertuples():
+    sql = """INSERT INTO transactions VALUES (?,?,?,?,?,?)"""
+    for dataRow in df.itertuples():
+        cursor.execute(sql, dataRow)
+
+    """ for row in df.itertuples():
         cursor.execute('''
             INSERT INTO adbudgetdb.dbo.transactions (transID, transDate, merchant, amount, type, account)
                 VALUES (?,?,?,?,?,?)
@@ -43,7 +48,7 @@ def uploadToSQL(transacitonData):
                 row.amount, 
                 row.type,
                 row.account
-        )
+        ) """
 
     cnxn.commit()
     
