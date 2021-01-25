@@ -6,15 +6,14 @@ from io import StringIO
 from datetime import datetime
 import random
 import pandas as pd
+import pypyodbc
 import xlrd
-import pyodbc
 
-def main(myblob: func.InputStream):
-    logging.info(f"Python blob trigger function processed blob \n"
-                 f"Name: {myblob.name}\n"
-                 f"Blob Size: {myblob.length} bytes")
-    
-    transactions = processTransactions(myblob)
+def main():
+    csv_file = open('C:/Users/Alex/Desktop/Budget/test.csv')
+    test = list(csv.reader(csv_file, delimiter=','))
+
+    transactions = processTransactions(test)
     uploadToSQL(transactions)
 
     logging.info("TransactionsProcessed")
@@ -29,7 +28,7 @@ def uploadToSQL(transacitonData):
     username = 'Thamous' 
     password = 'CHMqcJbIMmqlBwxMKRoT2BBc0E8We9vaUfJS0s' 
 
-    cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+    cnxn = pypyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
     cursor = cnxn.cursor()
 
@@ -51,18 +50,20 @@ def uploadToSQL(transacitonData):
     return 0
 
 def processTransactions(myblob):
-    transactionString = myblob.read().decode("utf-8")
+    transactionsData = myblob
+    # transactionString = myblob.read().decode("utf-8")
 
-    transactionsData = []
+    #transactionsData = []
 
-    f = StringIO(transactionString)
-    transactionsData = list(csv.reader(f))
+    #f = StringIO(transactionString)
+    #transactionsData = list(csv.reader(f))
     transactionsData.pop(0)
     if(transactionsData[len(transactionsData)-1][0]) == '':
         transactionsData.pop()
 
     for index, data in enumerate(transactionsData):
         transactionsData[index] = processRecordExcel(data)
+        print(index)
     
     return transactionsData
 
@@ -129,3 +130,5 @@ typeCodes = {
     "Income": 3,
     "Transfer": 4
 }
+
+main()
