@@ -7,7 +7,7 @@ from datetime import datetime
 import random
 import pandas as pd
 import xlrd
-import pyodbc
+import pypyodbc
 
 def main(myblob: func.InputStream):
     logging.info(f"Python blob trigger function processed blob \n"
@@ -29,7 +29,7 @@ def uploadToSQL(transacitonData):
     username = 'Thamous' 
     password = 'CHMqcJbIMmqlBwxMKRoT2BBc0E8We9vaUfJS0s' 
 
-    cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
+    cnxn = pypyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
     cursor = cnxn.cursor()
 
