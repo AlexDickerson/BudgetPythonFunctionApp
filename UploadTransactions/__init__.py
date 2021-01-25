@@ -33,10 +33,9 @@ def uploadToSQL(transacitonData):
     cnxn = pypyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';DATABASE='+database+';UID='+username+';PWD='+ password)
 
     cursor = cnxn.cursor()
-    sql = """
-    INSERT INTO myTable VALUES (?, ?)
-    """
-    for dataRow in df:
+
+    sql = """INSERT INTO transactions VALUES (?,?,?,?,?,?)"""
+    for dataRow in df.itertuples():
         cursor.execute(sql, dataRow)
 
     """ for row in df.itertuples():
